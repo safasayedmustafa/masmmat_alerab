@@ -1,0 +1,547 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>مصمّمة الإعراب</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@500;700;900&family=Noto+Naskh+Arabic:wght@500;700&display=swap">
+<style>
+/* Layout: one centered column in a boutique. A fitting-room panel (doll + her pieces) sits above a stitched white question card; every right answer unlocks a piece of the outfit. Single light look. */
+:root{
+  --bg:#FFE6EE; --plum:#3B1230; --plum-soft:#6B3A5E;
+  --rose:#C72C74; --rose-deep:#8E1E52; --rose-light:#F7A8C8; --gold:#E9B44C;
+  --paper:#FFFFFF; --line:rgba(59,18,48,.16);
+  --st-mabni:#B59BF2; --st-raf:#6EC1F5; --st-nasb:#FFB36B;
+  --good:#2FA66B; --good-bg:#E3F7EC; --bad:#E5484D; --bad-bg:#FDE9EA;
+  --glass:rgba(255,255,255,.78);
+  --f-display:'Aref Ruqaa','Cairo','Segoe UI',system-ui,sans-serif;
+  --f-ui:'Cairo','Segoe UI','Geeza Pro',system-ui,sans-serif;
+  --f-text:'Noto Naskh Arabic','Geeza Pro','Traditional Arabic',serif;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;background:var(--bg);color:var(--plum);font:500 16px/1.6 var(--f-ui);-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,summary:focus-visible{outline:3px solid var(--rose);outline-offset:3px}
+.bgl{position:fixed;inset:0;z-index:0;opacity:0;transition:opacity 1.2s ease}
+.bgl.on{opacity:1}
+.bgl::before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.95) 1.6px,transparent 2.2px),radial-gradient(circle,rgba(199,44,116,.16) 1.4px,transparent 2px);background-size:48px 48px,48px 48px;background-position:0 0,24px 24px}
+.b0{background:linear-gradient(180deg,#FFE9F0,#FBD0E0)}
+.b1{background:linear-gradient(180deg,#FADDF0,#E7CBF3)}
+.b2{background:linear-gradient(180deg,#F8D3E8,#D8BDF2)}
+.wrap{position:relative;z-index:1;width:100%;max-width:620px;margin:0 auto;padding-block:16px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px}
+.st-mabni{--c:var(--st-mabni)} .st-raf{--c:var(--st-raf)} .st-nasb{--c:var(--st-nasb)}
+
+/* HUD */
+.hud{display:grid;gap:10px;padding:12px 14px;border-radius:20px;background:var(--glass);border:2px solid #fff;backdrop-filter:blur(6px)}
+.hud-top,.hud-bot{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.lvl{display:grid;line-height:1.3}
+.lvl b{font:700 24px/1.5 var(--f-display)}
+.lvl span{font-size:13px;color:var(--plum-soft)}
+.hud-r{display:flex;align-items:center;gap:10px}
+.hearts{display:flex;gap:4px}
+.heart{width:24px;height:24px}
+.heart path{fill:#E83E8C;stroke:#E83E8C;stroke-width:1.5}
+.heart.lost path{fill:none;stroke:#B58AA2;stroke-dasharray:3 2}
+.mini{min-height:36px;padding:0 14px;border-radius:12px;border:2px solid var(--rose);background:#fff;color:var(--rose-deep);font-weight:900;font-size:14px}
+.strand{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+.bead{width:22px;height:22px;border-radius:50%;border:2px solid rgba(107,58,94,.45);background:#fff}
+.bead.ok{background:var(--good);border-color:var(--good)}
+.bead.no{background:var(--bad);border-color:var(--bad)}
+.bead.now{border-color:var(--rose);box-shadow:0 0 0 4px rgba(199,44,116,.2)}
+.score{display:flex;align-items:center;gap:6px;font-weight:900;font-size:18px;font-variant-numeric:tabular-nums}
+.score svg{width:20px;height:20px}
+.bump{animation:bump .4s}
+@keyframes bump{40%{transform:scale(1.25)}}
+
+/* Fitting room */
+.dressing{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:20px;background:var(--glass);border:2px solid #fff}
+.avatar{flex:none;width:112px}
+.doll{display:block;width:100%;height:auto;overflow:visible}
+.item{opacity:0;transform:scale(.7);transform-box:fill-box;transform-origin:center;transition:opacity .35s,transform .5s cubic-bezier(.3,1.6,.5,1)}
+.item.on{opacity:1;transform:none}
+.dside{display:grid;gap:10px;min-width:0;flex:1}
+.callout{margin:0;font:700 16px/1.5 var(--f-ui);color:var(--rose-deep)}
+.shelf{display:flex;flex-wrap:wrap;gap:6px}
+.piece{padding:1px 10px;border-radius:999px;font:700 13px/1.7 var(--f-ui);background:rgba(255,255,255,.7);color:var(--plum-soft);border:1.5px dashed rgba(107,58,94,.45)}
+.piece.on{background:var(--rose);color:#fff;border:1.5px solid var(--rose)}
+
+/* Panels, type, buttons */
+.title{font:700 32px/1.5 var(--f-display);text-wrap:balance;margin:0}
+.title.big{font-size:clamp(44px,13vw,64px);line-height:1.35;text-align:center}
+.hero{display:grid;gap:12px;justify-items:center;text-align:center}
+.hero .avatar{width:min(190px,52vw)}
+.hero .lead{max-width:30em}
+.hero .cta{width:100%;max-width:360px}
+.panel{padding:22px 20px;border-radius:24px;background:var(--glass);border:2px solid #fff;backdrop-filter:blur(6px);display:grid;gap:12px}
+.eyebrow{margin:0;font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--plum-soft)}
+.lead{margin:0;font-size:18px;line-height:1.8}
+.tip{margin:0;padding:12px 14px;border-radius:14px;background:rgba(199,44,116,.1);font-size:15px}
+.meta,.best{margin:0;font-size:14px;color:var(--plum-soft)}
+.best{font-weight:900;color:var(--rose-deep)}
+.ribbon{margin:0;padding:8px 26px;border-radius:14px;background:#fff;border:2px dashed var(--rose);color:var(--plum);font-size:14px;line-height:1.5}
+.ribbon b{display:block;font:700 24px/1.6 var(--f-display);color:var(--rose-deep)}
+.credit{margin:4px 0 0;text-align:center;font:700 14px var(--f-ui);color:var(--plum-soft)}
+.credit::before,.credit::after{content:"✦";color:var(--rose);margin-inline:8px}
+.cta{min-height:56px;padding:0 24px;border:0;border-radius:18px;background:var(--rose);color:#fff;font:900 19px var(--f-ui);box-shadow:0 5px 0 var(--rose-deep),0 12px 22px rgba(199,44,116,.28);transition:transform .08s,box-shadow .08s}
+.cta:active{transform:translateY(4px);box-shadow:0 1px 0 var(--rose-deep)}
+.cta.ghost{background:#fff;color:var(--rose-deep);border:2px solid var(--rose);box-shadow:none}
+.btnrow{display:grid;gap:10px}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.stat{padding:12px;border-radius:16px;background:#fff;display:grid}
+.stat b{font:900 30px/1.15 var(--f-ui);font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--plum-soft)}
+.finalavatar{justify-self:center;width:min(200px,56vw)}
+
+/* Question card (stitched) */
+.card{position:relative;background:var(--paper);border:3px solid #fff;border-radius:24px;padding:22px 20px 20px;display:grid;gap:12px;box-shadow:0 14px 28px rgba(199,44,116,.18)}
+.card::before{content:"";position:absolute;inset:7px;border:2px dashed rgba(199,44,116,.35);border-radius:18px;pointer-events:none}
+.card>*{position:relative}
+.card.shake{animation:shake .45s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.q-instr{margin:0;font:700 15px var(--f-ui);color:var(--plum-soft)}
+.sentence{margin:0;font:700 clamp(26px,7vw,34px)/1.9 var(--f-text);text-align:center;text-wrap:balance}
+.verb{display:inline-block;padding:0 .4em;border-radius:12px;background:#FFF0F6;box-shadow:0 0 0 2px #E7A9C4,0 3px 0 rgba(59,18,48,.12)}
+.verb.st-mabni,.verb.st-raf,.verb.st-nasb{box-shadow:0 0 0 3px var(--c),0 3px 0 rgba(59,18,48,.12)}
+.vow{font-size:1.15em;color:var(--rose-deep)}
+.vow.ph{display:inline-block;width:.42em;height:.42em;border:2px dashed var(--plum-soft);border-radius:50%;margin-inline-start:.08em}
+.blank{display:inline-block;min-width:3.2em;border-bottom:3px dashed var(--plum-soft);color:var(--plum-soft);text-align:center}
+.blank.filled{border-bottom:3px solid var(--good);color:var(--plum)}
+.opts{display:grid;gap:10px}
+.opts.row3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.opt{display:flex;align-items:center;gap:12px;width:100%;min-height:58px;padding:10px 14px;border-radius:16px;border:2px solid var(--line);background:#fff;color:var(--plum);font:700 17px/1.4 var(--f-ui);text-align:start;transition:transform .08s}
+.opt:active:not(:disabled){transform:scale(.98)}
+.opt .dot{flex:none;width:16px;height:16px;border-radius:50%;background:var(--c)}
+.opt .mark{margin-inline-start:auto;font-size:22px;line-height:1}
+.opt.right{border-color:var(--good);background:var(--good-bg)}
+.opt.right .mark::before{content:"✓";color:var(--good)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.opt.wrong .mark::before{content:"✕";color:var(--bad)}
+.opt.word{justify-content:center;font:700 26px/1.5 var(--f-text);min-height:64px;padding:6px 4px}
+.opt.word .mark{display:none}
+.words{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:6px 0}
+.word{min-height:56px;padding:2px 18px;border-radius:16px;border:2px solid var(--line);background:#fff;color:var(--plum);font:700 28px/1.5 var(--f-text)}
+.word.is-verb{border:2px dashed var(--rose);background:#FFF0F6}
+.word.right{border:2px solid var(--good);background:var(--good-bg)}
+.word.wrong{border:2px solid var(--bad);background:var(--bad-bg)}
+.zones{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.zone{display:grid;justify-items:center;gap:2px;padding:12px 6px;border:3px solid transparent;border-radius:18px;background:var(--c);color:var(--plum);text-align:center}
+.zone b{font:900 19px var(--f-ui)}
+.zone small{font:700 12px/1.3 var(--f-ui)}
+.zone.right{border-color:var(--good);box-shadow:0 0 0 3px #fff,0 0 0 6px var(--good)}
+.zone.wrong{border-color:var(--bad);box-shadow:0 0 0 3px #fff,0 0 0 6px var(--bad)}
+.zone:disabled:not(.right):not(.wrong){opacity:.5}
+.timer{height:10px;border-radius:99px;background:rgba(59,18,48,.1);overflow:hidden}
+.timer i{display:block;height:100%;transform-origin:right center;background:linear-gradient(90deg,var(--rose),var(--gold))}
+.timer i.warn{background:linear-gradient(90deg,var(--bad),var(--gold))}
+.timerlbl{margin:0;font:700 13px var(--f-ui);color:var(--plum-soft)}
+
+/* Feedback */
+.fb{padding:14px;border-radius:16px;border:2px solid var(--good);background:var(--good-bg);display:grid;gap:10px;animation:fbin .25s ease-out}
+.fb.bad{border-color:var(--bad);background:var(--bad-bg)}
+.fb.rare{border-color:var(--gold);background:linear-gradient(180deg,#FFF6D6,#E3F7EC)}
+.fb h3{margin:0;font:900 19px var(--f-ui)}
+.fb p{margin:0;font:500 18px/1.8 var(--f-ui)}
+.nk{font:700 1.15em var(--f-text)}
+@keyframes fbin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Guide and review */
+.guide{display:grid;gap:10px}
+.guide h2{font:700 30px/1.5 var(--f-display);margin:0}
+.rule{display:grid;gap:6px;padding:14px;border-radius:16px;background:#fff;color:var(--plum)}
+.rule h3{margin:0;font:900 18px var(--f-ui)}
+.rule p{margin:0;font-size:16px;color:var(--plum-soft)}
+.chip{justify-self:start;padding:2px 14px;border-radius:999px;background:var(--c);color:var(--plum);font:900 15px var(--f-ui)}
+.ex{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-weight:700}
+.exw{padding:0 12px;border-radius:10px;background:#FFF0F6;border:2px solid #F0C3D3;font:700 26px/1.6 var(--f-text)}
+.tools{display:flex;flex-wrap:wrap;gap:8px}
+.tools span{padding:0 14px;border-radius:999px;background:#FFF0F6;border:2px solid #F0C3D3;font:700 22px/1.6 var(--f-text)}
+.rev{border-radius:16px;background:rgba(255,255,255,.7);padding:4px 14px}
+.rev summary{min-height:44px;display:flex;align-items:center;font-weight:900;cursor:pointer}
+.rev .rule{margin-bottom:10px}
+.rev .sentence{font-size:24px;text-align:start;line-height:1.7}
+.mk{padding:0 .3em;border-radius:8px;background:#FFF0F6;box-shadow:0 0 0 2px var(--c,#E7A9C4)}
+.sheet{position:fixed;inset:0;z-index:50;background:rgba(59,18,48,.55);backdrop-filter:blur(4px);display:flex;justify-content:center;align-items:flex-start;overflow:auto;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.sheet-in{width:100%;max-width:620px;margin-block:16px;padding:16px;border-radius:24px;background:linear-gradient(180deg,#FFE9F0,#FBD0E0);display:grid;gap:12px}
+@media (prefers-reduced-motion:reduce){
+  .card.shake,.bump,.fb{animation:none}
+  .item{transition:none}
+}
+</style>
+
+<div class="bgl b0 on"></div><div class="bgl b1"></div><div class="bgl b2"></div>
+<main class="wrap" id="app" dir="rtl" lang="ar"></main>
+<div class="sheet" id="sheet" hidden><div class="sheet-in" id="sheetin"></div></div>
+
+<script>
+(function(){
+'use strict';
+document.documentElement.setAttribute('dir','rtl');
+document.documentElement.setAttribute('lang','ar');
+
+var FATHA='َ', DAMMA='ُ', KASRA='ِ', TIME=18000;
+function ar(n){return String(n).replace(/\d/g,function(d){return '٠١٢٣٤٥٦٧٨٩'[d];});}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function pickOne(a){return a[Math.floor(Math.random()*a.length)];}
+function sw(n){if(n===1)return 'نجمة واحدة';if(n===2)return 'نجمتان';if(n>=3&&n<=10)return ar(n)+' نجوم';return ar(n)+' نجمة';}
+
+var STATES={
+  mabni:{label:'مبني على الفتح',short:'مبني',sub:'ماضٍ',cls:'st-mabni'},
+  raf:{label:'مرفوع وعلامة رفعه الضمة',short:'مرفوع',sub:'مضارع بلا ناصب',cls:'st-raf'},
+  nasb:{label:'منصوب وعلامة نصبه الفتحة',short:'منصوب',sub:'مضارع بعد ناصب',cls:'st-nasb'}
+};
+var PIECES=[['dress','الفستان',1],['shoes','الحذاء',3],['belt','الحزام',5],['neck','العقد',7],['ear','الأقراط',9],['shawl','الشال',11],['bag','الحقيبة',13],['crown','التاج',15],['wand','العصا السحرية',17]];
+
+/* ---------- Question bank ---------- */
+var L1=[
+ {t:'{v} الخياط الصندوق',v:'فتح',vf:'فتحَ',kind:'mabni'},
+ {t:'{v} البستاني وردة جميلة',v:'زرع',vf:'زرعَ',kind:'mabni'},
+ {t:'{v} الرسام فراشة ملونة',v:'رسم',vf:'رسمَ',kind:'mabni'},
+ {t:'{v} الطباخ كعكة لذيذة',v:'خبز',vf:'خبزَ',kind:'mabni'},
+ {t:'{v} البائع الفساتين',v:'حمل',vf:'حملَ',kind:'mabni'},
+ {t:'{v} الضيوف إلى الحفلة',v:'وصل',vf:'وصلَ',kind:'mabni'},
+ {t:'{v} البستاني الزهور',v:'قطف',vf:'قطفَ',kind:'mabni'},
+ {t:'{v} المعلم الدرس',v:'شرح',vf:'شرحَ',kind:'mabni'},
+ {t:'{v} البنت الوردة',v:'تقطف',vf:'تقطفُ',kind:'raf'},
+ {t:'{v} الفراشة بين الأزهار',v:'تطير',vf:'تطيرُ',kind:'raf'},
+ {t:'{v} الأم الكعكة',v:'تخبز',vf:'تخبزُ',kind:'raf'},
+ {t:'{v} الفتاة لوحة جميلة',v:'ترسم',vf:'ترسمُ',kind:'raf'},
+ {t:'{v} الخياطة الفستان',v:'تخيط',vf:'تخيطُ',kind:'raf'},
+ {t:'{v} الأميرة التاج',v:'تلبس',vf:'تلبسُ',kind:'raf'},
+ {t:'{v} المعلمة الدرس',v:'تشرح',vf:'تشرحُ',kind:'raf'},
+ {t:'{v} صديقتي في الحديقة',v:'تلعب',vf:'تلعبُ',kind:'raf'},
+ {t:'{v} أختي شعرها',v:'تمشط',vf:'تمشطُ',kind:'raf'},
+ {t:'{v} الزهرة في الربيع',v:'تتفتح',vf:'تتفتحُ',kind:'raf'}
+];
+var L2A=[
+ {t:'لن {v} الأميرة الحفلة',v:'تفوت',vf:'تفوتَ',kind:'nasb',p:'لن'},
+ {t:'أريد أن {v} الكعكة',v:'أخبز',vf:'أخبزَ',kind:'nasb',p:'أن'},
+ {t:'ذهبت إلى المحل كي {v} الفستان',v:'أختار',vf:'أختارَ',kind:'nasb',p:'كي'},
+ {t:'لن {v} البنت الوردة أبدًا',v:'تكسر',vf:'تكسرَ',kind:'nasb',p:'لن'},
+ {t:'تعلمت الخياطة كي {v} فستانًا',v:'أصنع',vf:'أصنعَ',kind:'nasb',p:'كي'},
+ {t:'{v} الأميرة الحفلة كل عام',v:'تحضر',vf:'تحضرُ',kind:'raf'},
+ {t:'{v} المصممة الأقمشة الملونة',v:'تختار',vf:'تختارُ',kind:'raf'},
+ {t:'{v} الطالبة واجبها',v:'تكتب',vf:'تكتبُ',kind:'raf'},
+ {t:'{v} أمي الشاي',v:'تصنع',vf:'تصنعُ',kind:'raf'}
+];
+var L2B=[
+ {t:'لن {b} البنت كتابها',base:'تترك',ans:'fatha',p:'لن'},
+ {t:'الخياطة {b} الفستان بإتقان',base:'تخيط',ans:'damma'},
+ {t:'ذهبنا إلى الحديقة كي {b} الزهور',base:'نقطف',ans:'fatha',p:'كي'},
+ {t:'أريد أن {b} لوحة جميلة',base:'أرسم',ans:'fatha',p:'أن'},
+ {t:'الفراشة {b} بين الأزهار',base:'تطير',ans:'damma'},
+ {t:'لن {b} الصديقة الوعد',base:'تخلف',ans:'fatha',p:'لن'},
+ {t:'نرسم حتى {b} اللوحة',base:'نكمل',ans:'fatha',p:'حتى'},
+ {t:'خرجت الأم {b} الضيوف',base:'لتستقبل',ans:'fatha',p:'لام التعليل',vx:'تستقبلَ'},
+ {t:'هي {b} الكتاب بسرعة',base:'تقرأ',ans:'damma'},
+ {t:'أحب أن {b} القصص',base:'أقرأ',ans:'fatha',p:'أن'}
+];
+var L2D=[
+ {w:['لن','تخرج','البنت','بلا','حقيبة'],a:0,v:1,vf:'تخرجَ',p:'لن'},
+ {w:['أحب','أن','أرسم','في','الصباح'],a:1,v:2,vf:'أرسمَ',p:'أن'},
+ {w:['ذهبت','الأم','كي','تختار','الأقمشة'],a:2,v:3,vf:'تختارَ',p:'كي'},
+ {w:['نصبر','حتى','نصنع','الفستان'],a:1,v:2,vf:'نصنعَ',p:'حتى'},
+ {w:['يجب','أن','نحافظ','على','الحديقة'],a:1,v:2,vf:'نحافظَ',p:'أن'},
+ {w:['لن','نترك','الحديقة','ذابلة'],a:0,v:1,vf:'نتركَ',p:'لن'},
+ {w:['ذهبنا','كي','نشاهد','العرض'],a:1,v:2,vf:'نشاهدَ',p:'كي'}
+];
+var L3=[
+ {t:'{v} البائع الفستان الجديد',v:'عرض',vf:'عرضَ',kind:'mabni'},
+ {t:'{v} الخياط القماش الوردي',v:'اختار',vf:'اختارَ',kind:'mabni'},
+ {t:'{v} المصور صورة جميلة',v:'التقط',vf:'التقطَ',kind:'mabni'},
+ {t:'{v} العامل النافذة',v:'غسل',vf:'غسلَ',kind:'mabni'},
+ {t:'{v} الفتاة غرفتها',v:'تنظف',vf:'تنظفُ',kind:'raf'},
+ {t:'{v} الفراشة على الوردة',v:'تقف',vf:'تقفُ',kind:'raf'},
+ {t:'{v} الأميرة في القصر',v:'تسكن',vf:'تسكنُ',kind:'raf'},
+ {t:'{v} الطالبة القصيدة',v:'تحفظ',vf:'تحفظُ',kind:'raf'},
+ {t:'لن {v} المطر الحفلة',v:'يفسد',vf:'يفسدَ',kind:'nasb',p:'لن'},
+ {t:'جاءت الأميرة كي {v} الهدايا',v:'توزع',vf:'توزعَ',kind:'nasb',p:'كي'},
+ {t:'أحب أن {v} الورود لأمي',v:'أقطف',vf:'أقطفَ',kind:'nasb',p:'أن'},
+ {t:'ننتظر حتى {v} العرض',v:'يبدأ',vf:'يبدأَ',kind:'nasb',p:'حتى'}
+];
+function endingQ(o){var vow=o.ans==='fatha'?FATHA:DAMMA;return Object.assign({type:'ending',kind:o.ans==='fatha'?'nasb':'raf',v:o.base,vf:o.base+vow},o);}
+function buildLevel(n){
+  var out=[],m,r,a,b,d;
+  if(n===0){
+    m=shuffle(L1.filter(function(x){return x.kind==='mabni';}));
+    r=shuffle(L1.filter(function(x){return x.kind==='raf';}));
+    var k=Math.random()<.5?3:2;
+    return shuffle(m.slice(0,k).concat(r.slice(0,5-k))).map(function(x){return Object.assign({type:'state'},x);});
+  }
+  if(n===1){
+    a=shuffle(L2A);b=shuffle(L2B);d=shuffle(L2D);
+    var an=a.filter(function(x){return x.kind==='nasb';})[0],rf=a.filter(function(x){return x.kind==='raf';})[0];
+    var bf=b.filter(function(x){return x.ans==='fatha';})[0],bd=b.filter(function(x){return x.ans==='damma';})[0];
+    out=[Object.assign({type:'state'},an),Object.assign({type:'state'},rf),endingQ(bf),endingQ(bd),Object.assign({type:'tap',kind:'nasb'},d[0]),Object.assign({type:'tap',kind:'nasb'},d[1])];
+    return shuffle(out);
+  }
+  ['mabni','raf','nasb'].forEach(function(k){
+    shuffle(L3.filter(function(x){return x.kind===k;})).slice(0,2).forEach(function(x){out.push(Object.assign({type:'basket'},x));});
+  });
+  return shuffle(out);
+}
+var LEVELS=[
+ {name:'غرفة القياس',brief:'اختاري الإعراب الصحيح للفعل الملوَّن، وكل إجابة صحيحة تفتح قطعة جديدة من إطلالتك.',tip:'الماضي مبني دائمًا. أما المضارع الذي لم يسبقه ناصب فمرفوع.'},
+ {name:'ورشة التصميم',brief:'في الورشة يظهر الناصب! اضبطي آخر الفعل، واكتشفي الأداة التي نصبته.',tip:'أنْ، لنْ، كي، لام التعليل، حتى: بعد إحداها يُنصب المضارع بالفتحة.'},
+ {name:'عرض الأزياء',brief:'حان وقت العرض! ضعي كل فعل في الصندوق الصحيح قبل أن ينتهي الوقت.',tip:'ماضٍ ← مبني. مضارع بلا ناصب ← مرفوع. مضارع بعد ناصب ← منصوب.'}
+];
+
+/* ---------- State ---------- */
+var app=document.getElementById('app'),sheet=document.getElementById('sheet'),sheetin=document.getElementById('sheetin');
+var S,lastFocus=null;
+function newGame(){S={lv:0,qi:0,qs:[],lives:3,streak:0,res:[],cur:null,answered:false,tm:null,tm2:null,shown:[]};}
+newGame();
+function getBest(){try{return Number(localStorage.getItem('mosamima-best'))||0;}catch(e){return 0;}}
+function setBest(n){try{localStorage.setItem('mosamima-best',String(n));}catch(e){}}
+function setBg(n){var els=document.querySelectorAll('.bgl');for(var i=0;i<els.length;i++){els[i].classList.toggle('on',i===n);}}
+function render(h,nofoot){app.innerHTML=h+(nofoot?'':'<p class="credit">عمل الطالبة صفاء السيد مصطفى</p>');try{window.scrollTo(0,0);}catch(e){}}
+function stars(){var t=0;S.res.forEach(function(r){if(r)t+=r.stars;});return t+(S.cur?S.cur.stars:0);}
+
+/* ---------- Doll ---------- */
+function avatar(g){
+  function on(id){for(var i=0;i<PIECES.length;i++){if(PIECES[i][0]===id)return g>=PIECES[i][2]?' on':'';}return '';}
+  return '<svg class="doll" id="doll" viewBox="0 0 200 290" aria-hidden="true">'
+  +'<path d="M58 70C54 40 76 22 100 22s46 18 42 48c4 40 4 80-10 108H68C54 150 54 110 58 70Z" fill="#4A2A1E"/>'
+  +'<rect x="84" y="190" width="13" height="72" rx="6" fill="#F5CDAF"/><rect x="103" y="190" width="13" height="72" rx="6" fill="#F5CDAF"/>'
+  +'<path d="M76 130Q58 160 62 198M124 130Q142 160 138 198" stroke="#F5CDAF" stroke-width="11" stroke-linecap="round" fill="none"/>'
+  +'<rect x="92" y="104" width="16" height="22" fill="#F5CDAF"/>'
+  +'<path d="M74 124Q100 112 126 124L122 192H78Z" fill="#FFF5F8" stroke="#F0C3D3" stroke-width="2"/>'
+  +'<g class="item it-dress'+on('dress')+'"><path d="M76 124Q100 114 124 124L120 160L164 244Q100 270 36 244L80 160Z" fill="#F58BB6"/><path d="M52 232Q100 252 148 232" stroke="#FBB6D2" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="100" cy="190" r="3" fill="#fff"/><circle cx="84" cy="212" r="3" fill="#fff"/><circle cx="116" cy="212" r="3" fill="#fff"/></g>'
+  +'<g class="item it-shawl'+on('shawl')+'"><path d="M64 126Q100 106 136 126L146 154Q100 136 54 154Z" fill="#BFA8F0"/><path d="M56 152Q100 136 144 152" stroke="#fff" stroke-opacity=".7" stroke-width="2" fill="none" stroke-dasharray="3 4"/></g>'
+  +'<g class="item it-neck'+on('neck')+'"><path d="M84 116Q100 138 116 116" stroke="#E9A3C2" stroke-width="6" stroke-linecap="round" stroke-dasharray="0.1 8" fill="none"/></g>'
+  +'<g class="item it-belt'+on('belt')+'"><rect x="78" y="156" width="44" height="9" rx="4" fill="#C72C74"/><path d="M100 160L86 150V170ZM100 160L114 150V170Z" fill="#C72C74"/><circle cx="100" cy="160" r="4" fill="#FFD1E3"/></g>'
+  +'<g class="item it-bag'+on('bag')+'"><path d="M132 198Q142 178 152 198" stroke="#2FA67F" stroke-width="3" fill="none"/><rect x="128" y="198" width="28" height="22" rx="5" fill="#7FD8BE"/><circle cx="142" cy="209" r="3" fill="#fff"/></g>'
+  +'<g class="item it-wand'+on('wand')+'"><path d="M62 198L36 150" stroke="#E9B44C" stroke-width="4" stroke-linecap="round"/><polygon points="34,124 38,134 49,135 40,142 43,153 34,147 25,153 28,142 19,135 30,134" fill="#FFD76B"/></g>'
+  +'<g class="item it-shoes'+on('shoes')+'"><ellipse cx="90" cy="266" rx="12" ry="7" fill="#C72C74"/><ellipse cx="110" cy="266" rx="12" ry="7" fill="#C72C74"/><path d="M82 262Q90 256 98 262M102 262Q110 256 118 262" stroke="#fff" stroke-opacity=".7" stroke-width="2" fill="none"/></g>'
+  +'<circle cx="100" cy="78" r="33" fill="#F5CDAF"/>'
+  +'<circle cx="88" cy="80" r="3.2" fill="#3B1230"/><circle cx="112" cy="80" r="3.2" fill="#3B1230"/>'
+  +'<path d="M91 92Q100 100 109 92" stroke="#C0486E" stroke-width="2.5" fill="none" stroke-linecap="round"/>'
+  +'<circle cx="81" cy="91" r="5" fill="#F7A8B8" opacity=".6"/><circle cx="119" cy="91" r="5" fill="#F7A8B8" opacity=".6"/>'
+  +'<path d="M66 78Q66 42 100 42Q134 42 134 78Q118 58 100 58Q82 58 66 78Z" fill="#4A2A1E"/>'
+  +'<g class="item it-ear'+on('ear')+'"><circle cx="67" cy="92" r="4" fill="#E9B44C"/><circle cx="133" cy="92" r="4" fill="#E9B44C"/><circle cx="67" cy="100" r="3" fill="#FFD76B"/><circle cx="133" cy="100" r="3" fill="#FFD76B"/></g>'
+  +'<g class="item it-crown'+on('crown')+'"><path d="M72 50L78 24L91 40L100 18L109 40L122 24L128 50Z" fill="#F7C948" stroke="#E9B44C" stroke-width="2" stroke-linejoin="round"/><circle cx="100" cy="30" r="3" fill="#E83E8C"/><circle cx="80" cy="36" r="2.5" fill="#6EC1F5"/><circle cx="120" cy="36" r="2.5" fill="#6EC1F5"/></g>'
+  +'</svg>';
+}
+function nextHint(g){
+  for(var i=0;i<PIECES.length;i++){if(g<PIECES[i][2])return 'القطعة التالية: '+PIECES[i][1];}
+  return 'إطلالتك كاملة!';
+}
+function dressing(g,text){
+  var chips=PIECES.map(function(p){return '<span class="piece'+(g>=p[2]?' on':'')+'" data-id="'+p[0]+'">'+p[1]+'</span>';}).join('');
+  return '<section class="dressing" aria-label="غرفة القياس"><div class="avatar">'+avatar(g)+'</div><div class="dside"><p class="callout" id="callout" aria-live="polite">'+(text||nextHint(g))+'</p><div class="shelf">'+chips+'</div></div></section>';
+}
+function refreshDressing(announce){
+  var g=stars(),doll=document.getElementById('doll');if(!doll)return;
+  var newly=[];
+  PIECES.forEach(function(p){
+    var on=g>=p[2],el=doll.querySelector('.it-'+p[0]),chip=document.querySelector('.piece[data-id="'+p[0]+'"]');
+    if(el)el.classList.toggle('on',on);
+    if(chip)chip.classList.toggle('on',on);
+    if(on&&S.shown.indexOf(p[0])<0){S.shown.push(p[0]);newly.push(p[1]);}
+  });
+  var co=document.getElementById('callout');
+  if(co&&announce){co.textContent=newly.length?'قطعة جديدة: '+newly.join(' و ')+'!':nextHint(g);}
+}
+
+/* ---------- Explanations ---------- */
+function explain(q){
+  var ve='<span class="nk">'+(q.vx||q.vf)+'</span>';
+  if(q.kind==='mabni')return '«'+ve+'» فعل ماضٍ، والفعل الماضي مبني دائمًا. هنا هو مبني على الفتح.';
+  if(q.kind==='raf')return '«'+ve+'» فعل مضارع ولم يسبقه ناصب، فهو مرفوع وعلامة رفعه الضمة.';
+  return '«'+ve+'» فعل مضارع سبقته «'+q.p+'»، وهي من أدوات النصب، فهو منصوب وعلامة نصبه الفتحة.';
+}
+function fullSentence(q){
+  var m='<span class="mk '+STATES[q.kind].cls+'">'+q.vf+'</span>';
+  if(q.type==='tap')return q.w.map(function(x,i){return i===q.v?m:x;}).join(' ');
+  if(q.type==='ending')return q.t.replace('{b}',m);
+  return q.t.replace('{v}',m);
+}
+function mistakeItems(list){
+  return list.map(function(q){return '<article class="rule"><p class="sentence">'+fullSentence(q)+'</p><p>'+explain(q)+'</p></article>';}).join('');
+}
+
+/* ---------- Guide ---------- */
+function rule(k,name,text,ex,res){
+  return '<article class="rule '+STATES[k].cls+'"><span class="chip">'+STATES[k].short+'</span><h3>'+name+'</h3><p>'+text+'</p><div class="ex"><span class="exw">'+ex+'</span><span>←</span><span>'+res+'</span></div></article>';
+}
+function guideHtml(){
+  return '<section class="guide" aria-label="دليل المصمّمة"><h2>دليل المصمّمة</h2>'
+  +'<p class="lead">الماضي ثابت لا يتغير آخره، فنسميه مبنيًا. أما المضارع فيتغير آخره، فنسميه معربًا: ضمة للرفع وفتحة للنصب.</p>'
+  +rule('mabni','الفعل الماضي','مبني دائمًا، وعلامة بنائه هنا الفتح.','رسمَ','مبني على الفتح')
+  +rule('raf','المضارع الذي لم يسبقه ناصب','مرفوع، وعلامة رفعه الضمة.','ترسمُ','مرفوع بالضمة')
+  +'<article class="rule st-nasb"><span class="chip">منصوب</span><h3>المضارع بعد أداة نصب</h3><p>إذا سبقته إحدى هذه الأدوات نُصب، وعلامة نصبه الفتحة:</p>'
+  +'<div class="tools"><span>أنْ</span><span>لنْ</span><span>كي</span><span>لامُ التعليل</span><span>حتى</span></div>'
+  +'<div class="ex"><span class="exw">لن ترسمَ</span><span>←</span><span>منصوب بالفتحة</span></div></article></section>';
+}
+function openGuide(t){
+  lastFocus=t||null;
+  sheetin.innerHTML='<button class="cta ghost" data-act="close" id="closeguide" type="button">إغلاق الدليل</button>'+guideHtml();
+  sheet.hidden=false;document.body.style.overflow='hidden';
+  var c=document.getElementById('closeguide');if(c)c.focus();
+}
+function closeGuide(){sheet.hidden=true;document.body.style.overflow='';if(lastFocus&&lastFocus.focus)lastFocus.focus();}
+
+/* ---------- Screens ---------- */
+var HEART='<svg class="heart{L}" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-4.6-9.3-9.2C1 8.3 3 5 6.4 5c2 0 3.5 1.1 4.2 2.4h.8C12.1 6.1 13.6 5 15.6 5 19 5 21 8.3 19.3 11.8 17 16.4 12 21 12 21z"/></svg>';
+var STAR='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#E9B44C" d="M12 2l3 6.5 7 .9-5.2 4.8 1.4 7L12 17.8 5.8 21.2l1.4-7L2 9.4l7-.9z"/></svg>';
+function start(){
+  setBg(0);var best=getBest();
+  render('<section class="hero"><div class="avatar">'+avatar(99)+'</div>'
+   +'<h1 class="title big">مصمّمة الإعراب</h1>'
+   +'<p class="ribbon">عمل الطالبة<b>صفاء السيد مصطفى</b></p>'
+   +'<p class="lead">أجيبي عن أسئلة إعراب الفعل الماضي والمضارع، واجمعي النجوم لتكتمل إطلالة الأميرة.</p>'
+   +'<button class="cta" data-act="new" type="button">ابدأ التصميم</button>'
+   +(best?'<p class="best">أكثر ما جمعتِ: '+sw(best)+'</p>':'')
+   +'<p class="meta">٣ مراحل · ١٧ سؤالًا · للصف الخامس</p></section>'+guideHtml(),true);
+}
+function intro(){
+  var L=LEVELS[S.lv];setBg(S.lv);
+  render('<section class="panel"><p class="eyebrow">المرحلة '+ar(S.lv+1)+' من ٣</p><h2 class="title">'+L.name+'</h2>'
+   +'<p class="lead">'+L.brief+'</p><p class="tip"><b>تذكّري:</b> '+L.tip+'</p>'
+   +'<button class="cta" data-act="go" type="button">هيا نبدأ</button></section>');
+}
+function hud(fresh){
+  var L=LEVELS[S.lv],i,beads='',hs='';
+  for(i=0;i<S.qs.length;i++){var b=S.cur.beads[i];beads+='<span class="bead '+(b||(i===S.qi?'now':''))+'"></span>';}
+  for(i=0;i<3;i++)hs+=HEART.replace('{L}',i<S.lives?'':' lost');
+  return '<header class="hud"><div class="hud-top"><div class="lvl"><b>'+L.name+'</b><span>المرحلة '+ar(S.lv+1)+' من ٣ · السؤال '+ar(Math.min(S.qi+1,S.qs.length))+' من '+ar(S.qs.length)+'</span></div>'
+   +'<div class="hud-r"><div class="hearts" role="img" aria-label="القلوب المتبقية: '+ar(S.lives)+' من ٣">'+hs+'</div>'
+   +(S.lv<2?'<button class="mini" data-act="guide" type="button">الدليل</button>':'')+'</div></div>'
+   +'<div class="hud-bot"><div class="strand" aria-label="الأسئلة">'+beads+'</div><div class="score'+(fresh?' bump':'')+'">'+STAR+'<span>'+ar(stars())+'</span></div></div></header>';
+}
+function beginLevel(){
+  S.qs=buildLevel(S.lv);S.qi=0;S.lives=3;S.streak=0;
+  S.cur={stars:0,correct:0,rare:0,mist:[],beads:[],total:S.qs.length};
+  showQuestion();
+}
+function verbSpan(q){return '<span class="verb" id="verb">'+q.v+'<span class="vow ph"></span></span>';}
+function showQuestion(){
+  S.answered=false;
+  var g=stars();
+  S.shown=PIECES.filter(function(p){return g>=p[2];}).map(function(p){return p[0];});
+  var q=S.qs[S.qi],body='';
+  if(q.type==='state'){
+    body='<p class="q-instr">ما إعراب الفعل الملوَّن؟</p><p class="sentence">'+q.t.replace('{v}',verbSpan(q))+'</p><div class="opts">'
+      +shuffle(['mabni','raf','nasb']).map(function(k){return '<button class="opt '+STATES[k].cls+'" data-act="pick" data-v="'+k+'" type="button"><span class="dot"></span><span>'+STATES[k].label+'</span><span class="mark"></span></button>';}).join('')+'</div>';
+  }else if(q.type==='ending'){
+    body='<p class="q-instr">اختاري الضبط الصحيح لآخر الفعل.</p><p class="sentence">'+q.t.replace('{b}','<span class="blank" id="blank">…</span>')+'</p><div class="opts row3">'
+      +shuffle([['fatha',FATHA],['damma',DAMMA],['kasra',KASRA]]).map(function(p){return '<button class="opt word" data-act="pick" data-v="'+p[0]+'" type="button">'+q.v+p[1]+'<span class="mark"></span></button>';}).join('')+'</div>';
+  }else if(q.type==='tap'){
+    body='<p class="q-instr">الفعل الملوَّن منصوب. اضغطي على الأداة التي نصبته.</p><div class="words">'
+      +q.w.map(function(x,i){return '<button class="word'+(i===q.v?' is-verb':'')+'" data-act="pick" data-v="'+i+'" type="button">'+x+'</button>';}).join('')+'</div>';
+  }else{
+    var gift='<svg viewBox="0 0 40 36" width="38" height="34" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><rect x="4" y="14" width="32" height="20" rx="3"/><rect x="2" y="9" width="36" height="7" rx="2"/><path d="M20 9v25M20 9c-4-8-12-6-9-2 1.5 2 6 2 9 2zM20 9c4-8 12-6 9-2-1.5 2-6 2-9 2z"/></svg>';
+    body='<div class="timer"><i id="tbar"></i></div><p class="timerlbl">العرض يبدأ بعد قليل…</p><p class="q-instr">ضعي الفعل الملوَّن في الصندوق الصحيح.</p><p class="sentence">'+q.t.replace('{v}',verbSpan(q))+'</p><div class="zones">'
+      +['mabni','raf','nasb'].map(function(k){return '<button class="zone '+STATES[k].cls+'" data-act="pick" data-v="'+k+'" type="button">'+gift+'<b>'+STATES[k].short+'</b><small>'+STATES[k].sub+'</small></button>';}).join('')+'</div>';
+  }
+  render('<div id="hudslot">'+hud(false)+'</div>'+dressing(g)+'<section class="card" id="card">'+body+'</section>');
+  if(q.type==='basket')startTimer();
+}
+
+/* ---------- Timer ---------- */
+function startTimer(){
+  var bar=document.getElementById('tbar');if(!bar)return;
+  bar.style.transition='none';bar.style.transform='scaleX(1)';void bar.offsetWidth;
+  bar.style.transition='transform '+TIME+'ms linear';bar.style.transform='scaleX(0)';
+  S.tm=setTimeout(timeUp,TIME);S.tm2=setTimeout(function(){bar.classList.add('warn');},TIME*0.7);
+}
+function stopTimer(){
+  clearTimeout(S.tm);clearTimeout(S.tm2);
+  var bar=document.getElementById('tbar');
+  if(bar){var m=getComputedStyle(bar).transform;bar.style.transition='none';bar.style.transform=m;}
+}
+function timeUp(){if(S.answered)return;S.answered=true;stopTimer();finish(false,null,true);}
+
+/* ---------- Answer ---------- */
+function pick(choice){
+  if(S.answered)return;S.answered=true;stopTimer();
+  var q=S.qs[S.qi],ok;
+  if(q.type==='state'||q.type==='basket')ok=(choice===q.kind);
+  else if(q.type==='ending')ok=(choice===q.ans);
+  else ok=(Number(choice)===q.a);
+  finish(ok,choice,false);
+}
+function finish(ok,choice,timeout){
+  var q=S.qs[S.qi],card=document.getElementById('card'),btns=card.querySelectorAll('[data-act="pick"]'),i;
+  var correctKey=(q.type==='state'||q.type==='basket')?q.kind:(q.type==='ending'?q.ans:String(q.a));
+  for(i=0;i<btns.length;i++){
+    var b=btns[i],v=b.getAttribute('data-v');b.disabled=true;
+    if(v===correctKey)b.classList.add('right');
+    else if(!ok&&choice!==null&&v===String(choice))b.classList.add('wrong');
+  }
+  var vEl=document.getElementById('verb');
+  if(vEl){vEl.classList.add(STATES[q.kind].cls);var vw=vEl.querySelector('.vow');vw.classList.remove('ph');vw.textContent=q.vf.slice(q.v.length);}
+  var bl=document.getElementById('blank');
+  if(bl){bl.textContent=q.vf;bl.classList.add('filled');}
+  if(q.type==='tap'){var tb=card.querySelectorAll('.word')[q.v];if(tb)tb.textContent=q.vf;}
+  var rare=false;
+  if(ok){S.cur.correct++;S.streak++;rare=(S.streak%3===0);S.cur.stars+=rare?2:1;if(rare)S.cur.rare++;S.cur.beads[S.qi]='ok';}
+  else{S.streak=0;S.lives--;S.cur.beads[S.qi]='no';S.cur.mist.push(q);card.classList.add('shake');}
+  document.getElementById('hudslot').innerHTML=hud(ok);
+  refreshDressing(ok);
+  var head,cls='fb';
+  if(ok){head=rare?'ثلاث متتالية! نجمة إضافية: +٢ نجمة':pickOne(['أحسنتِ! +١ نجمة','رائع! +١ نجمة','تصميم جميل! +١ نجمة','ممتاز! +١ نجمة']);if(rare)cls+=' rare';}
+  else{head=timeout?'انتهى الوقت!':'ليس تمامًا، تذكّري القاعدة:';cls+=' bad';}
+  var extra='';
+  if(!ok&&q.type==='ending'&&choice==='kasra')extra=' ولا يُكسر آخر المضارع هنا.';
+  if(!ok&&q.type==='tap'&&Number(choice)===q.v)extra=' الفعل هو الكلمة الملوَّنة، والمطلوب الأداة التي قبله.';
+  var label=S.lives===0?'انتهت القلوب':(S.qi+1>=S.qs.length?'انتهت المرحلة':'السؤال التالي');
+  card.insertAdjacentHTML('beforeend','<div class="'+cls+'" id="fb"><h3>'+head+'</h3><p>'+explain(q)+extra+'</p><button class="cta" id="nextbtn" data-act="next" type="button">'+label+'</button></div>');
+  var nb=document.getElementById('nextbtn');
+  if(nb){try{nb.focus({preventScroll:true});nb.scrollIntoView({block:'nearest'});}catch(e){}}
+}
+function next(){
+  if(S.lives===0)return fail();
+  if(S.qi+1>=S.qs.length)return levelDone();
+  S.qi++;showQuestion();
+}
+function levelDone(){
+  var r=S.cur;S.res[S.lv]=r;S.cur=null;
+  var last=S.lv>=2,g=stars();
+  render('<section class="panel"><p class="eyebrow">اكتملت المرحلة</p><h2 class="title">'+LEVELS[S.lv].name+'</h2>'
+   +dressing(g)
+   +'<div class="stats"><div class="stat"><b>'+ar(r.stars)+'</b><span>نجوم'+(r.rare?' (منها نجمة إضافية)':'')+'</span></div><div class="stat"><b>'+ar(r.correct)+' / '+ar(r.total)+'</b><span>إجابات صحيحة</span></div></div>'
+   +(r.mist.length?'<details class="rev"><summary>راجعي أخطاءك ('+ar(r.mist.length)+')</summary>'+mistakeItems(r.mist)+'</details>':'')
+   +'<button class="cta" data-act="nextlevel" type="button">'+(last?'اكشفي النتيجة':'المرحلة التالية')+'</button></section>');
+}
+function fail(){
+  var r=S.cur;
+  render('<section class="panel"><p class="eyebrow">'+LEVELS[S.lv].name+'</p><h2 class="title">نفدت القلوب!</h2>'
+   +'<p class="lead">ضاعت ثلاثة قلوب. راجعي الأخطاء ثم أعيدي المرحلة بأسئلة جديدة.</p>'
+   +(r.mist.length?'<details class="rev" open><summary>راجعي أخطاءك ('+ar(r.mist.length)+')</summary>'+mistakeItems(r.mist)+'</details>':'')
+   +'<div class="btnrow"><button class="cta" data-act="retry" type="button">أعيدي المرحلة</button>'+(S.lv<2?'<button class="cta ghost" data-act="guide" type="button">افتحي الدليل</button>':'')+'</div></section>');
+}
+function final(){
+  setBg(2);
+  var c=0,t=0,g=0,mist=[];
+  S.res.forEach(function(r){c+=r.correct;t+=r.total;g+=r.stars;mist=mist.concat(r.mist);});
+  var pct=t?c/t:0,rank,msg;
+  if(pct>=0.9){rank='أميرة الإعراب';msg='إطلالتك كاملة وإعرابك دقيق! أنتِ تعرفين القواعد جيدًا.';}
+  else if(pct>=0.65){rank='مصمّمة موهوبة';msg='أداء جميل. راجعي أخطاءك لتكتمل إطلالتك.';}
+  else{rank='مصمّمة مجتهدة';msg='كل مصمّمة بدأت بخطوة. اقرئي الدليل وجرّبي من جديد.';}
+  var best=getBest(),isNew=g>best;if(isNew)setBest(g);
+  render('<section class="panel"><p class="eyebrow">النتيجة النهائية</p><div class="finalavatar">'+avatar(g)+'</div><h2 class="title big">'+rank+'</h2><p class="lead" style="text-align:center">'+msg+'</p>'
+   +'<div class="stats"><div class="stat"><b>'+ar(g)+'</b><span>مجموع النجوم</span></div><div class="stat"><b>'+ar(c)+' / '+ar(t)+'</b><span>إجابات صحيحة</span></div></div>'
+   +(isNew?'<p class="best" style="text-align:center">رقم قياسي جديد!</p>':'')
+   +(mist.length?'<details class="rev"><summary>راجعي أخطاءك ('+ar(mist.length)+')</summary>'+mistakeItems(mist)+'</details>':'')
+   +'<div class="btnrow"><button class="cta" data-act="again" type="button">تصميم جديد</button><button class="cta ghost" data-act="home" type="button">الشاشة الرئيسية</button></div></section>');
+}
+
+/* ---------- Events ---------- */
+document.addEventListener('click',function(e){
+  var t=e.target.closest?e.target.closest('[data-act]'):null;if(!t||t.disabled)return;
+  var a=t.getAttribute('data-act');
+  if(a==='new'||a==='again'){newGame();intro();}
+  else if(a==='go'){beginLevel();}
+  else if(a==='pick'){pick(t.getAttribute('data-v'));}
+  else if(a==='next'){next();}
+  else if(a==='guide'){openGuide(t);}
+  else if(a==='close'){closeGuide();}
+  else if(a==='nextlevel'){if(S.lv<2){S.lv++;intro();}else final();}
+  else if(a==='retry'){beginLevel();}
+  else if(a==='home'){newGame();start();}
+});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!sheet.hidden)closeGuide();});
+start();
+})();
+</script>
+
+</body></html>
